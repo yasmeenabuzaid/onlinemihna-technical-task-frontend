@@ -7,8 +7,8 @@ export default function Footer() {
     <Box 
       component="footer" 
       sx={{ 
-        backgroundColor: '#0f172a', 
-        color: 'white', 
+        backgroundColor: '#ffffff', 
+        color: 'black ', 
         py: 4, 
         mt: 'auto'
       }}

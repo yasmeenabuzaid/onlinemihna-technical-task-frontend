@@ -12,18 +12,17 @@
     "noCredit": "لا حاجة لبطاقة ائتمان",
     "postJobs": "انشر حتى 3 وظائف"
   },
-  "Talents": {
-    "title": "تصفح المواهب",
-    "searchPlaceholder": "ابحث بالاسم أو الدور...",
-    "columns": {
-      "name": "الاسم",
-      "role": "الدور",
-      "experience": "الخبرة",
-      "skills": "المهارات",
-      "action": "الإجراء"
-    },
-    "viewProfile": "عرض الملف الشخصي"
-  },
+ "Talents": {
+  "title": "قاعدة بيانات المواهب",
+  "searchPlaceholder": "ابحث عن اسم أو تخصص...",
+  "name": "الاسم",
+  "role": "التخصص",
+  "experience": "الخبرة",
+  "status": "الحالة",
+  "action": "الإجراء",
+  "viewProfile": "عرض الملف",
+  "rowsPerPage": "عدد الأسطر:"
+},
   "Dashboard": {
     "title": "نظرة عامة على لوحة التحكم",
     "overview": "نظرة عامة على لوحة التحكم",
