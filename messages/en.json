@@ -1,0 +1,55 @@
+{
+  "Navbar": {
+    "logo": "HireWay",
+    "dashboardBtn": "Go to Dashboard",
+    "langBtn": "عربي"
+  },
+  "Landing": {
+    "heroTitle": "Build Your Dream Team",
+    "heroSubtitle": "With HireWay",
+    "heroDesc": "Connect with over <b>500 pre-vetted remote talents</b> tailored for the Gulf region. Post jobs, track applications, and hire effortlessly.",
+    "startTrial": "Start 7-Day Free Trial",
+    "noCredit": "No credit card required",
+    "postJobs": "Post up to 3 jobs"
+  },
+  "Talents": {
+    "title": "Browse Talents",
+    "searchPlaceholder": "Search by name or role...",
+    "columns": {
+      "name": "Name",
+      "role": "Role",
+      "experience": "Experience",
+      "skills": "Skills",
+      "action": "Action"
+    },
+    "viewProfile": "View Profile"
+  },
+  "Dashboard": {
+    "overview": "Dashboard Overview",
+    "title": "Dashboard Overview",
+    "totalTalents": "Total Talents",
+    "activeJobs": "Active Jobs",
+    "applications": "Applications",
+    "availableTalents": "Available Talents",
+    "activeJobPosts": "Active Job Posts",
+    "totalApplications": "Total Applications",
+    "jobsPosted": "Jobs Posted",
+    "trialPeriod": "Trial Period",
+
+    "daysLeft": "Days Left in Trial"
+  },
+  "Jobs": {
+    "title": "My Posted Jobs",
+    "addBtn": "Post New Job",
+    "limitReached": "You've reached the limit of 3 jobs for the free trial.",
+    "form": {
+      "title": "Post a New Job",
+      "jobTitle": "Job Title",
+      "company": "Company Name",
+      "location": "Location",
+      "submit": "Post Job",
+      "cancel": "Cancel"
+    },
+    "noJobs": "No jobs posted yet. Start hiring now!"
+  }
+}
