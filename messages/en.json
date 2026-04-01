@@ -43,8 +43,17 @@
     "title": "My Posted Jobs",
     "addBtn": "Post New Job",
     "limitReached": "You've reached the limit of 3 jobs for the free trial.",
+    "postNewJob": "Post a Job",
+    "limitReachedMessage": "You have reached the limit of 3 job postings for the 7-day free trial. Please upgrade your account to post more.",
+    "modalTitle": "Post a New Job",
+    "Jobs": {
+      "noJobs": "No jobs posted yet. Start hiring now!"
+    },
     "form": {
-      "title": "Post a New Job",
+      "title": "My Posted Jobs",
+      "postNewJob": "Post a Job",
+      "limitReachedMessage": "You have reached the limit of 3 job postings for the 7-day free trial. Please upgrade your account to post more.",
+      "modalTitle": "Post a New Job",
       "jobTitle": "Job Title",
       "company": "Company Name",
       "location": "Location",

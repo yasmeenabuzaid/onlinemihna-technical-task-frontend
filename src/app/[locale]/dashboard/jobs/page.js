@@ -1,13 +1,13 @@
 "use client";
 
 import { Box } from '@mui/material';
-import TalentPage from '@/components/talents/index';
+import JobsPage from '@/components/jobs/index';
 
-export default function Talent() {
+export default function Jobs() {
 
   return (
     <Box sx={{  width: '100%', minHeight: '100%' }}>
-      <TalentPage />
+      <JobsPage />
     </Box>
   );
 }
