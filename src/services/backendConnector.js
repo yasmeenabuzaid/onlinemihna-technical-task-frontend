@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://onlinemihna-technical-task-backend.onrender.com';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://onlinemihna-technical-task-backend.onrender.com/api';
 
 export const getGuestId = () => {
     if (typeof window !== 'undefined') {
