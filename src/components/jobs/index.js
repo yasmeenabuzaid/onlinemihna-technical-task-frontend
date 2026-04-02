@@ -1,55 +1,74 @@
 "use client";
-// hook
-import { useState } from 'react';
-// MUI + icons
-import { 
-  Box, Typography, Button,  Stack
-} from '@mui/material';
+import { useState, useEffect, useCallback } from 'react';
+import { Box, Typography, Button, Stack } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-
-//translation
 import { useTranslations } from 'next-intl';
 
-//components
+// API & Context
+import { BackendConnector } from '@/services/backendConnector';
+import { useApp } from '@/context/AppContext';
+
+// components
 import TrialLimit from './TrialLimit';
 import JobsList from './JobsList';
 import AddJobModal from './AddJobModal';
 
-
 export default function JobsPage() {
   const t = useTranslations('Jobs');
+  const { trialStatus, startTrialSession } = useApp(); 
   
   const [jobs, setJobs] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
-  const [newJob, setNewJob] = useState({ title: '', type: '', location: '' });
+  const [newJob, setNewJob] = useState({ title: '', type: '', location: '', description: '' });
 
-  const MAX_JOBS = 3; // limit for trial users
-  const isLimitReached = jobs.length >= MAX_JOBS;
-  const progressPercentage = (jobs.length / MAX_JOBS) * 100; 
+  const MAX_JOBS = 3;
+  const isLimitReached = trialStatus?.limitReached || jobs.length >= MAX_JOBS;
+  const progressPercentage = (jobs.length / MAX_JOBS) * 100;
+
+const fetchJobs = useCallback(async () => {
+    try {
+      setLoading(true);
+      const response = await BackendConnector.getJobs();
+    // check if response is already an array, if not try to access data or data.data
+    const jobsArray = Array.isArray(response) ? response : (response.data || []); 
+      console.log("Final Jobs Array:", jobsArray);
+      setJobs(jobsArray);
+    } catch (error) {
+      console.error("Failed to fetch jobs:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchJobs();
+  }, [fetchJobs]);
 
   const handleOpen = () => !isLimitReached && setOpenModal(true);
   
   const handleClose = () => {
     setOpenModal(false);
-    setNewJob({ title: '', type: '', location: '' }); 
+    setNewJob({ title: '', type: '', location: '', description: '' }); 
   };
 
-  const handlePostJob = () => {
-    if (newJob.title && newJob.location) {
-      const jobToAdd = {
-        ...newJob,
-        id: Date.now(),
-        date: new Date().toLocaleDateString(),
-        status: 'Active'
-      };
-      setJobs([jobToAdd, ...jobs]); 
+  const handlePostJob = async () => {
+    try {
+      const response = await BackendConnector.createJob(newJob);
+      
+      const addedJob = response.data?.job || response.data;
+      setJobs(prevJobs => [addedJob, ...prevJobs]);
+      
+      await startTrialSession(); 
+      
       handleClose();
+    } catch (error) {
+      alert(error.response?.data?.error || error.message || "Limit reached or Server Error");
     }
   };
 
   return (
-    <Box sx={{ p: { xs: 2, md: 3 }, width: '100%', flexGrow: 1, minHeight: '100%' }}>
-      {/* Header */}
+    <Box sx={{ p: { xs: 2, md: 3 }, width: '100%', flexGrow: 1 }}>
       <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" alignItems={{ xs: 'flex-start', md: 'center' }} spacing={3} sx={{ mb: 4 }}>
         <Box>
           <Typography variant="h4" fontWeight="800" color="#0f172a" gutterBottom>
@@ -64,21 +83,31 @@ export default function JobsPage() {
           variant="contained" 
           startIcon={<AddIcon />} 
           onClick={handleOpen}
-          disabled={isLimitReached}
-          sx={{ borderRadius: 2, textTransform: 'none', px: 3, py: 1.2, fontWeight: 'bold', boxShadow: isLimitReached ? 'none' : '0 4px 12px rgba(14, 165, 233, 0.3)' }}
+          disabled={isLimitReached || trialStatus?.isExpired}
+          sx={{ 
+            borderRadius: 2, 
+            textTransform: 'none', 
+            px: 3, 
+            py: 1.2, 
+            fontWeight: 'bold',
+            boxShadow: isLimitReached ? 'none' : '0 4px 12px rgba(14, 165, 233, 0.3)'
+          }}
         >
           {t('postNewJob')}
         </Button>
       </Stack>
 
-      {/* Trial Limit Component */}
-      <TrialLimit jobs={jobs} t={t} isLimitReached={isLimitReached} MAX_JOBS={MAX_JOBS} progressPercentage={progressPercentage} />
+      <TrialLimit 
+        jobs={jobs} 
+        t={t} 
+        isLimitReached={isLimitReached} 
+        MAX_JOBS={MAX_JOBS} 
+        progressPercentage={progressPercentage} 
+      />
+      
+      <JobsList jobs={jobs} loading={loading} handleOpen={handleOpen} />
 
-      {/* Jobs List Component */}
-      <JobsList jobs={jobs} handleOpen={handleOpen} />
-
-      {/* Modal */}
-     <AddJobModal 
+      <AddJobModal 
         openModal={openModal} 
         handleClose={handleClose}
         newJob={newJob}

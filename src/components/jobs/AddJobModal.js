@@ -28,13 +28,15 @@ export default function AddJobModal({ t, openModal, handleClose, newJob, setNewJ
               value={newJob.type}
               onChange={(e) => setNewJob({...newJob, type: e.target.value})}
             />
-            <TextField 
-              label="Employment Type" 
-              fullWidth 
-              variant="outlined"
-              value={newJob.description}
-              onChange={(e) => setNewJob({...newJob, description: e.target.value})}
-            />
+          <TextField 
+  label="Job Description" 
+  fullWidth 
+  multiline
+  rows={3}
+  variant="outlined"
+  value={newJob.description}
+  onChange={(e) => setNewJob({...newJob, description: e.target.value})}
+/>
             <TextField 
               label="Location" 
               fullWidth 

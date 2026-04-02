@@ -1,19 +1,37 @@
 "use client";
 
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
+import { BackendConnector } from '@/services/backendConnector'; 
 
-const AppContext = createContext(); // Create the context
+const AppContext = createContext(); 
 
-// Create a provider component that will wrap the app and provide the context values
-export function AppProvider({ children }) {  // childran -> App.js 
+export function AppProvider({ children }) { 
   const locale = useLocale();
-  const t = useTranslations('Navbar'); // key for translations
+  const t = useTranslations('Navbar'); 
+
+  const [trialStatus, setTrialStatus] = useState(null);
+  const [loadingTrial, setLoadingTrial] = useState(false); 
+
+  const startTrialSession = async () => {
+    try {
+        setLoadingTrial(true);
+        const status = await BackendConnector.getTrialStatus();
+        setTrialStatus(status);
+    } catch (error) {
+        console.error("Error fetching trial status:", error);
+    } finally {
+        setLoadingTrial(false);
+    }
+  };
 
   const value = {
     locale,
     isRTL: locale === 'ar',
     t, 
+    trialStatus,   
+    loadingTrial,
+    startTrialSession 
   };
 
   return (
@@ -23,12 +41,10 @@ export function AppProvider({ children }) {  // childran -> App.js
   );
 }
 
-// Custom Hook to use the AppContext
 export const useApp = () => {
   const context = useContext(AppContext);
   if (!context) {
     throw new Error('useApp must be used within an AppProvider');
   }
   return context; 
-  // return the context values (locale, isRTL, t) to be used in any component that calls this hook
 };

@@ -1,3 +1,5 @@
+"use client";
+
 // mui + icons
 import {
     Box, Typography, TextField, InputAdornment, List, ListItemButton,
@@ -13,39 +15,33 @@ import { useApp } from '@/context/AppContext';
 // i18n
 import { useTranslations } from 'next-intl';
 
-// data
-import { allTalents } from '@/data/talentsData';
-//hooks
-import { useState, useMemo, useEffect } from 'react';
+// hooks
+import { useState, useEffect } from 'react';
 
-
-export default function SidebarTalents({ selectedTalent, setSelectedTalent }) {
+export default function SidebarTalents({ 
+    selectedTalent, 
+    setSelectedTalent, 
+    filteredTalents, 
+    searchTerm,      
+    setSearchTerm    
+}) {
     const { isRTL } = useApp();
     const t = useTranslations('Talents');
-    const [searchTerm, setSearchTerm] = useState('');
+    
     const [page, setPage] = useState(1);
     const itemsPerPage = 12; 
 
-    // filter talents based on search term
-    const filteredTalents = useMemo(() => {
-        return allTalents.filter(talent =>
-            talent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            talent.role.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-    }, [searchTerm]); // run filter only when searchTerm changes
+    const safeTalents = Array.isArray(filteredTalents) ? filteredTalents : [];
+    const totalPages = Math.ceil(safeTalents.length / itemsPerPage);
+    const currentTalents = safeTalents.slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
-    // pagination logic
-    const totalPages = Math.ceil(filteredTalents.length / itemsPerPage);
-    const currentTalents = filteredTalents.slice((page - 1) * itemsPerPage, page * itemsPerPage);
-
-    // select first talent if current selected is not in the filtered list anymore
     useEffect(() => {
         if (currentTalents.length > 0 && (!selectedTalent || !currentTalents.find(t => t.id === selectedTalent.id))) {
             setSelectedTalent(currentTalents[0]);
         } else if (currentTalents.length === 0) {
             setSelectedTalent(null);
         }
-    }, [currentTalents, setSelectedTalent]); 
+    }, [currentTalents, selectedTalent, setSelectedTalent]); 
 
     return (
         <Box
@@ -57,7 +53,6 @@ export default function SidebarTalents({ selectedTalent, setSelectedTalent }) {
                 borderRight: isRTL ? 0 : '1px solid #e2e8f0',
                 borderLeft: isRTL ? '1px solid #e2e8f0' : 0,
                 bgcolor: '#ffffff'
-                
             }}
         >
             {/*filter and search*/}
@@ -66,9 +61,12 @@ export default function SidebarTalents({ selectedTalent, setSelectedTalent }) {
                     <TextField
                         fullWidth
                         size="small"
-                        placeholder={t('searchPlaceholder')}
+                        placeholder={t('searchPlaceholder') || 'Search talents...'}
                         value={searchTerm}
-                        onChange={(e) => { setSearchTerm(e.target.value); setPage(1); }}
+                        onChange={(e) => { 
+                            setSearchTerm(e.target.value); 
+                            setPage(1); 
+                        }}
                         InputProps={{
                             startAdornment: <InputAdornment position="start"><SearchIcon fontSize="small" /></InputAdornment>,
                         }}
@@ -104,7 +102,7 @@ export default function SidebarTalents({ selectedTalent, setSelectedTalent }) {
                     >
                         <ListItemAvatar sx={{ minWidth: 50 }}>
                             <Avatar sx={{ width: 40, height: 40, fontWeight: 'bold', bgcolor: selectedTalent?.id === talent.id ? '#0ea5e9' : '#cbd5e1' }}>
-                                {talent.name.charAt(0)}
+                                {talent?.name ? talent.name.charAt(0) : '?'}
                             </Avatar>
                         </ListItemAvatar>
                         <ListItemText

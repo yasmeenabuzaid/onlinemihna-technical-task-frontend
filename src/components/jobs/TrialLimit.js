@@ -1,27 +1,53 @@
-import { Typography, Stack, Alert, LinearProgress, Card } from '@mui/material';
+"use client";
+import { Box, Typography, LinearProgress, Paper } from '@mui/material';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { useApp } from '@/context/AppContext';
+import { useTranslations } from 'next-intl'; 
 
-export default function TrialLimit({ t, jobs, isLimitReached, MAX_JOBS, progressPercentage }) {
+export default function TrialLimit({ jobs = [] }) {
+  const { trialStatus } = useApp();
+  const t = useTranslations('Trial'); 
+  
+  const MAX_JOBS = 3;
+  const currentCount = Math.max(jobs.length, trialStatus?.usedJobs || 0);
+  const isLimitReached = trialStatus?.limitReached || currentCount >= MAX_JOBS;
+  const progressPercentage = (currentCount / MAX_JOBS) * 100;
+
   return (
-   <Card sx={{ mb: 5, p: 3, borderRadius: 3, boxShadow: '0 2px 10px rgba(0,0,0,0.02)', border: '1px solid #e2e8f0', bgcolor: '#f8fafc' }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1.5 }}>
-          <Typography variant="subtitle2" fontWeight="bold" color="text.secondary">
-            Free Trial Quota
+    <Paper sx={{ p: 3, mb: 4, borderRadius: 3, border: '1px solid #e2e8f0', boxShadow: 'none' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+        <Typography variant="subtitle2" fontWeight="bold" color="#64748b">
+          {t('quotaTitle')}
+        </Typography>
+        <Typography variant="subtitle2" fontWeight="bold" color={isLimitReached ? 'error' : 'primary'}>
+          {currentCount} / {MAX_JOBS} {t('jobsPosted')} 
+        </Typography>
+      </Box>
+
+      <LinearProgress 
+        variant="determinate" 
+        value={progressPercentage > 100 ? 100 : progressPercentage} 
+        sx={{ 
+          height: 8, 
+          borderRadius: 5, 
+          bgcolor: '#f1f5f9',
+          '& .MuiLinearProgress-bar': {
+            bgcolor: isLimitReached ? '#ef4444' : '#0ea5e9'
+          }
+        }} 
+      />
+
+      {isLimitReached && (
+        <Box sx={{ 
+          display: 'flex', alignItems: 'center', gap: 1, mt: 2, p: 1.5, 
+          bgcolor: '#fff7ed', borderRadius: 2, border: '1px solid #ffedd5' 
+        }}>
+          <ErrorOutlineIcon sx={{ color: '#c2410c', fontSize: 20 }} />
+          <Typography variant="caption" color="#c2410c" fontWeight="600">
+            {t('limitWarning')}
           </Typography>
-          <Typography variant="body2" fontWeight="bold" color={isLimitReached ? 'error.main' : 'primary.main'}>
-            {jobs.length} / {MAX_JOBS} Jobs Posted
-          </Typography>
-        </Stack>
-        <LinearProgress 
-          variant="determinate" 
-          value={progressPercentage} 
-          color={isLimitReached ? "error" : "primary"}
-          sx={{ height: 8, borderRadius: 4, bgcolor: '#e2e8f0' }}
-        />
-        {isLimitReached && (
-          <Alert severity="warning" sx={{ mt: 2, borderRadius: 2, '& .MuiAlert-message': { fontWeight: '500' } }}>
-            {t('limitReachedMessage')}
-          </Alert>
-        )}
-      </Card>
+        </Box>
+      )}
+    </Paper>
   );
 }

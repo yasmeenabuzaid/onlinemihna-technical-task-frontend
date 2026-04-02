@@ -1,139 +1,149 @@
 "use client";
-// mui + icons
-import React from 'react';
-import { 
-  Box, Typography, Paper, Avatar, Stack, Button, Grid, 
-  IconButton, MenuItem, Select, FormControl, Chip
+
+import {
+  Box, Typography, Avatar, Chip, Divider, Select, MenuItem , Button,
+  FormControl, Stack, Link
 } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
-import DownloadIcon from '@mui/icons-material/Download';
-import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import LanguageIcon from '@mui/icons-material/Language';
+ import LockIcon from '@mui/icons-material/Lock';   
+export default function TalentDetails({ selectedTalent, handleStatusChange ,isExpired}) {
 
-// translations
-import { useTranslations } from 'next-intl';
-
-export default function TalentDetails({ selectedTalent, handleStatusChange }) {
-  const t = useTranslations('Talents');
+  // حماية: إذا ما في موهبة محددة
+  if (!selectedTalent) {
+    return (
+      <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', bgcolor: '#fafafa', p: 4 }}>
+        <Typography color="text.secondary" variant="h6">
+          Please select a talent from the list to view details.
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
-    <Box 
-      sx={{ 
-        flexGrow: 1, 
-        display: { xs: selectedTalent ? 'flex' : 'none', md: 'flex' }, 
-        flexDirection: 'column',
-        bgcolor: '#f8fafc', 
-        overflowY: 'auto',
-      }}
-    >
-      {selectedTalent ? (
-        <Box sx={{  width: '100%', mx: 'auto' }}> 
-          
-          <Paper sx={{ p: 3, borderRadius: 3, mb: 2.5, boxShadow: '0 2px 10px rgba(0,0,0,0.02)', border: '1px solid #e2e8f0' }}>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2.5} alignItems={{ xs: 'center', sm: 'flex-start' }} textAlign={{ xs: 'center', sm: 'left' }}>
-              
-              <Avatar sx={{ width: 80, height: 80, fontSize: '2rem', bgcolor: '#0ea5e9', boxShadow: '0 4px 10px rgba(14, 165, 233, 0.2)' }}>
-                {selectedTalent.name.charAt(0)}
-              </Avatar>
-              
-              <Box sx={{ flexGrow: 1 }}>
-                <Typography variant="h5" fontWeight="800" color="#0f172a" sx={{ mb: 0.5 }}>
-                  {selectedTalent.name}
-                </Typography>
-                <Typography variant="body2" color="text.secondary" fontWeight="500" sx={{ mb: 1.5 }}>
-                  {selectedTalent.role}
-                </Typography>
-                
-                <Stack direction="row" spacing={0.5} justifyContent={{ xs: 'center', sm: 'flex-start' }}>
-                  <IconButton size="small" sx={{ bgcolor: '#f1f5f9', color: '#0077b5', width: 32, height: 32 }}><LinkedInIcon fontSize="small" /></IconButton>
-                  <IconButton size="small" sx={{ bgcolor: '#f1f5f9', color: '#333', width: 32, height: 32 }}><GitHubIcon fontSize="small" /></IconButton>
-                  <IconButton size="small" sx={{ bgcolor: '#f1f5f9', color: '#0ea5e9', width: 32, height: 32 }}><LanguageIcon fontSize="small" /></IconButton>
-                </Stack>
-              </Box>
-
-              <Box sx={{ minWidth: 130 }}>
-                <FormControl fullWidth size="small">
-                  <Select
-                    value={selectedTalent.status || 'Available'}
-                    onChange={handleStatusChange}
-                    sx={{ 
-                      borderRadius: 2, 
-                      fontWeight: 'bold',
-                      fontSize: '0.875rem', 
-                      height: 36, 
-                      bgcolor: selectedTalent.status === 'Hired' ? '#dcfce7' : selectedTalent.status === 'In Review' ? '#fef9c3' : '#e0f2fe',
-                      color: selectedTalent.status === 'Hired' ? '#166534' : selectedTalent.status === 'In Review' ? '#854d0e' : '#0369a1',
-                      '& fieldset': { border: 'none' }
-                    }}
-                  >
-                    <MenuItem sx={{ fontSize: '0.875rem' }} value="Available">Available</MenuItem>
-                    <MenuItem sx={{ fontSize: '0.875rem' }} value="In Review">In Review</MenuItem>
-                    <MenuItem sx={{ fontSize: '0.875rem' }} value="Hired">Hired</MenuItem>
-                    <MenuItem sx={{ fontSize: '0.875rem' }} value="Rejected">Rejected</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-            </Stack>
-          </Paper>
-
-          <Paper sx={{ p: 3, borderRadius: 3, mb: 3, boxShadow: '0 2px 10px rgba(0,0,0,0.02)', border: '1px solid #e2e8f0' }}>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={5}>
-                <Typography variant="caption" color="text.secondary" fontWeight="bold" textTransform="uppercase">
-                  {t('columns.experience')}
-                </Typography>
-                <Stack direction="row" alignItems="center" gap={1.5} sx={{ mt: 1 }}>
-                  <Avatar sx={{ bgcolor: '#f1f5f9', width: 32, height: 32 }}><WorkOutlineIcon fontSize="small" color="action" /></Avatar>
-                  <Typography variant="body2" fontWeight="600" color="#1e293b">{selectedTalent.experience}</Typography>
-                </Stack>
-              </Grid>
-
-              <Grid item xs={12} sm={7}>
-                <Typography variant="caption" color="text.secondary" fontWeight="bold" textTransform="uppercase">
-                  {t('columns.skills')}
-                </Typography>
-                <Box sx={{ display: 'flex', gap: 0.8, flexWrap: 'wrap', mt: 1 }}>
-                  {selectedTalent.skills.map(skill => (
-                    <Chip 
-                      key={skill} 
-                      label={skill} 
-                      size="small" 
-                      sx={{ 
-                        bgcolor: '#f8fafc', 
-                        border: '1px solid #cbd5e1', 
-                        fontWeight: '500',
-                        fontSize: '0.75rem' 
-                      }} 
-                    />
-                  ))}
-                </Box>
-              </Grid>
-            </Grid>
-          </Paper>
-
-          <Stack direction="row" gap={1.5} justifyContent="flex-end">
-            <Button 
-              variant="outlined" 
-              startIcon={<DownloadIcon fontSize="small" />} 
-              sx={{ borderRadius: 2, textTransform: 'none', px: 2.5, py: 0.8, fontWeight: 'bold', fontSize: '0.875rem' }}
-            >
-              Download CV
-            </Button>
-            <Button 
-              variant="contained" 
-              startIcon={<EmailIcon fontSize="small" />} 
-              sx={{ borderRadius: 2, textTransform: 'none', px: 3, py: 0.8, fontWeight: 'bold', boxShadow: 'none', fontSize: '0.875rem' }}
-            >
-              Send Message
-            </Button>
-          </Stack>
-
+    <Box sx={{ flexGrow: 1, p: { xs: 2, md: 4 }, bgcolor: '#fafafa', overflowY: 'auto' }}>
+      
+      {/* Header Profile */}
+<Box sx={{ 
+        display: 'flex', alignItems: 'center', gap: 2, mb: 4,
+        filter: isExpired ? 'blur(4px)' : 'none', // تغبيش الاسم والصورة
+        pointerEvents: isExpired ? 'none' : 'auto' 
+      }}>        <Avatar sx={{ width: 80, height: 80, bgcolor: '#0ea5e9', fontSize: '2.5rem', fontWeight: 'bold' }}>
+          {selectedTalent.name ? selectedTalent.name.charAt(0) : '?'}
+        </Avatar>
+        <Box>
+          <Typography variant="h5" fontWeight="800" color="#0f172a">
+            {selectedTalent.name}
+          </Typography>
+          <Typography variant="subtitle1" color="text.secondary" fontWeight="500">
+            {selectedTalent.role}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+            Experience: {selectedTalent.experience}
+          </Typography>
         </Box>
-      ) : (
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'text.secondary' }}>
-          <Typography variant="body1">Select a talent to view profile</Typography>
+      </Box>
+
+      <Divider sx={{ mb: 3 }} />
+
+      {/* Status Update */}
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1, color: '#334155' }}>
+          Candidate Status
+        </Typography>
+        <FormControl size="small" sx={{ minWidth: 200 }}>
+          <Select
+            value={selectedTalent.status || 'Available'}
+            onChange={handleStatusChange}
+            sx={{ bgcolor: 'white', '& .MuiOutlinedInput-notchedOutline': { borderColor: '#e2e8f0' } }}
+          >
+            <MenuItem value="Available">Available</MenuItem>
+            <MenuItem value="In Review">In Review</MenuItem>
+            <MenuItem value="Hired">Hired</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+
+      {/* Skills */}
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 1.5, color: '#334155' }}>
+          Technical Skills
+        </Typography>
+        <Box sx={{ display: 'flex', gap: 0.8, flexWrap: 'wrap' }}>
+          {/* الكود السحري اللي بيمنع إيرور الـ map */}
+          {typeof selectedTalent.skills === 'string'
+            ? selectedTalent.skills.split(',').map((skill, index) => (
+                <Chip
+                  key={index}
+                  label={skill.trim()}
+                  size="small"
+                  sx={{ fontWeight: 600, bgcolor: '#e0f2fe', color: '#0369a1', borderRadius: 1.5 }}
+                />
+              ))
+            : selectedTalent.skills?.map((skill, index) => (
+                <Chip
+                  key={index}
+                  label={skill}
+                  size="small"
+                  sx={{ fontWeight: 600, bgcolor: '#e0f2fe', color: '#0369a1', borderRadius: 1.5 }}
+                />
+              ))
+          }
+        </Box>
+      </Box>
+
+      {/* Contact & Links */}
+      <Box sx={{ 
+        filter: isExpired ? 'blur(6px)' : 'none', 
+        pointerEvents: isExpired ? 'none' : 'auto',
+        userSelect: isExpired ? 'none' : 'auto' 
+      }}>
+        <Typography variant="subtitle2" fontWeight="bold" sx={{ mb: 2, color: '#334155' }}>
+          Contact & Profiles
+        </Typography>
+        <Stack spacing={2.5}>
+          {selectedTalent.email && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <EmailIcon color="action" fontSize="small" />
+              <Typography variant="body2" color="#475569">{selectedTalent.email}</Typography>
+            </Box>
+          )}
+          {selectedTalent.linkedinUrl && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <LinkedInIcon color="primary" fontSize="small" />
+              <Link href={selectedTalent.linkedinUrl} target="_blank" variant="body2" underline="hover" color="#0ea5e9">
+                LinkedIn Profile
+              </Link>
+            </Box>
+          )}
+          {selectedTalent.githubUrl && (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
+              <GitHubIcon sx={{ color: '#1e293b' }} fontSize="small" />
+              <Link href={selectedTalent.githubUrl} target="_blank" variant="body2" underline="hover" color="#0ea5e9">
+                GitHub Profile
+              </Link>
+            </Box>
+          )}
+        </Stack>
+      </Box>
+{isExpired && (
+        <Box sx={{
+          position: 'absolute', top: -30, left: 140, width: '100%', height: '100%',
+          display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center',
+          bgcolor: 'rgba(255, 255, 255, 0.5)', zIndex: 10, textAlign: 'center', p: 3
+        }}>
+          <Box sx={{ bgcolor: 'white', p: 4, borderRadius: 4, boxShadow: '0 20px 40px rgba(0,0,0,0.1)', border: '1px solid #e2e8f0' }}>
+            <LockIcon sx={{ fontSize: 50, color: '#0ea5e9', mb: 2 }} />
+            <Typography variant="h5" fontWeight="bold" gutterBottom>Trial Expired</Typography>
+            <Typography variant="body1" color="text.secondary" sx={{ mb: 3, maxWidth: 300 }}>
+              Your 7-day access has ended. Upgrade now to see full talent profiles and contact info.
+            </Typography>
+            <Button variant="contained" size="large" sx={{ borderRadius: '50px', px: 4 }}>
+              Upgrade to Pro
+            </Button>
+          </Box>
         </Box>
       )}
     </Box>

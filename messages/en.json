@@ -39,27 +39,46 @@
 
     "daysLeft": "Days Left in Trial"
   },
-  "Jobs": {
+ "Jobs": {
+  "title": "My Posted Jobs",
+  "addBtn": "Post New Job",
+  "limitReached": "You've reached the limit of 3 jobs for the free trial.",
+  "postNewJob": "Post a Job Now",
+  "limitReachedMessage": "You have reached the limit of 3 job postings for the 7-day free trial. Please upgrade your account to post more.",
+  "modalTitle": "Post a New Job",
+  "noJobs": "No jobs posted yet",
+  "trialExpiredUpgrade": "Trial expired or limit reached. Please upgrade.",
+  "createFirstJob": "Create your first job posting now.",
+  "upgradeNow": "Upgrade Now",
+  "active": "Active",
+  "new": "New",
+  "untitledRole": "Untitled Role",
+  "jobDescription": "Job Description",
+  "noDescription": "No detailed description provided for this position.",
+  "remote": "Remote",
+  "published": "Published: ",
+  "today": "Today",
+  "form": {
     "title": "My Posted Jobs",
-    "addBtn": "Post New Job",
-    "limitReached": "You've reached the limit of 3 jobs for the free trial.",
     "postNewJob": "Post a Job",
     "limitReachedMessage": "You have reached the limit of 3 job postings for the 7-day free trial. Please upgrade your account to post more.",
     "modalTitle": "Post a New Job",
-    "Jobs": {
-      "noJobs": "No jobs posted yet. Start hiring now!"
-    },
-    "form": {
-      "title": "My Posted Jobs",
-      "postNewJob": "Post a Job",
-      "limitReachedMessage": "You have reached the limit of 3 job postings for the 7-day free trial. Please upgrade your account to post more.",
-      "modalTitle": "Post a New Job",
-      "jobTitle": "Job Title",
-      "company": "Company Name",
-      "location": "Location",
-      "submit": "Post Job",
-      "cancel": "Cancel"
-    },
-    "noJobs": "No jobs posted yet. Start hiring now!"
+    "jobTitle": "Job Title",
+    "company": "Company Name",
+    "location": "Location",
+    "submit": "Post Job",
+    "cancel": "Cancel"
+  }
+},
+"Trial": {
+    "quotaTitle": "Free Trial Quota",
+    "jobsPosted": "Jobs Posted",
+    "limitWarning": "You have reached the limit of 3 job postings. Please upgrade your account to post more."
+  },
+  "TrialBanner": {
+    "expiredWarning": "Your 7-day free trial has expired. Please upgrade to continue.",
+    "limitWarning": "You have reached the limit of 3 job posts. Please upgrade to post more.",
+    "upgradeBtn": "Upgrade Now",
+    "activeStatus": "Free Trial Active: {daysLeft} days left, {jobsLeft} job posts remaining."
   }
 }

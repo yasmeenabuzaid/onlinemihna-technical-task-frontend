@@ -3,19 +3,30 @@
 import { AppBar, Toolbar, Typography, Button, Container, Box } from '@mui/material';
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import LanguageIcon from '@mui/icons-material/Language';
+import LogoutIcon from '@mui/icons-material/Logout'; 
 import { useRouter, usePathname } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
+import { useApp } from '@/context/AppContext'; 
 
 export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
   const locale = useLocale(); 
   const t = useTranslations('Navbar');
+  
+  const { trialStatus, isRTL } = useApp();
 
   const handleLanguageSwitch = () => {
     const nextLocale = locale === 'en' ? 'ar' : 'en';
     const newPath = pathname.replace(`/${locale}`, `/${nextLocale}`);
     router.push(newPath);
+  };
+
+  const handleLogout = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('mihna_guest_id'); 
+      window.location.href = `/${locale}`;
+    }
   };
 
   return (
@@ -35,7 +46,7 @@ export default function Navbar() {
             sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
             onClick={() => router.push(`/${locale}`)} 
           >
-            <WorkOutlineIcon color="primary" sx={{ mr: locale === 'en' ? 1 : 0, ml: locale === 'ar' ? 1 : 0, fontSize: 28 }} />
+            <WorkOutlineIcon color="primary" sx={{ mr: isRTL ? 0 : 1, ml: isRTL ? 1 : 0, fontSize: 28 }} />
             <Typography variant="h6" fontWeight="bold" color="text.primary">
               {t('logo')}
             </Typography>
@@ -45,8 +56,8 @@ export default function Navbar() {
             
             <Button 
               onClick={handleLanguageSwitch}
-              startIcon={locale === 'en' ? <LanguageIcon /> : null}
-              endIcon={locale === 'ar' ? <LanguageIcon /> : null} 
+              startIcon={!isRTL ? <LanguageIcon /> : null}
+              endIcon={isRTL ? <LanguageIcon /> : null} 
               sx={{ 
                 color: 'text.secondary', 
                 fontWeight: 'bold',
@@ -56,19 +67,36 @@ export default function Navbar() {
               {t('langBtn')}
             </Button>
 
-            <Button 
-              variant="outlined" 
-              color="primary" 
-              onClick={() => router.push(`/${locale}/dashboard`)} 
-              sx={{ 
-                borderRadius: '20px', 
-                textTransform: 'none', 
-                fontWeight: 'bold',
-                px: 3
-              }}
-            >
-              {t('dashboardBtn')}
-            </Button>
+            {trialStatus ? (
+              <Button 
+                variant="outlined" 
+                color="error" 
+                onClick={handleLogout} 
+                startIcon={<LogoutIcon />}
+                sx={{ 
+                  borderRadius: '20px', 
+                  textTransform: 'none', 
+                  fontWeight: 'bold',
+                  px: 3
+                }}
+              >
+                {isRTL ? 'تسجيل خروج' : 'Logout'}
+              </Button>
+            ) : (
+              <Button 
+                variant="contained"
+                color="primary" 
+                onClick={() => router.push(`/${locale}/dashboard/talents`)} 
+                sx={{ 
+                  borderRadius: '20px', 
+                  textTransform: 'none', 
+                  fontWeight: 'bold',
+                  px: 3
+                }}
+              >
+                {t('dashboardBtn')}
+              </Button>
+            )}
 
           </Box>
 

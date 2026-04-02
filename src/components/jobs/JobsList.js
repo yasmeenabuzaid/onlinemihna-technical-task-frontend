@@ -1,90 +1,160 @@
-import { Box, Typography, Button, Grid, Card, CardContent, Stack, Chip, IconButton } from '@mui/material';
+"use client";
+// mui+icons
+import { 
+  Box, Typography, Button, Grid, Card, CardContent, 
+  Stack, Chip, IconButton, Divider 
+} from '@mui/material';
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import StarIcon from '@mui/icons-material/Star'; 
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import DescriptionIcon from '@mui/icons-material/Description';
+
+
+// translations
+import { useTranslations } from 'next-intl';
+
+// context
+import { useApp } from '@/context/AppContext';
 
 export default function JobsList({ jobs, handleOpen }) {
-    // If there are no jobs, show the empty state
+  const { trialStatus } = useApp();
+  const t = useTranslations('Jobs'); 
+
+
+  // for safety, if jobs = empty or null
   if (jobs.length === 0) {
     return (
-      <Box sx={{ textAlign: 'center', py: 10, px: 2, border: '2px dashed #cbd5e1', borderRadius: 4, bgcolor: '#f8fafc' }}>
-        <WorkOutlineIcon sx={{ fontSize: 60, color: '#94a3b8', mb: 2 }} />
-        <Typography variant="h6" fontWeight="bold" color="#334155" gutterBottom>
-          No jobs posted yet
+      <Box 
+        sx={{ 
+          textAlign: 'center', py: 10, px: 2, border: '2px dashed #cbd5e1', 
+          borderRadius: 4, bgcolor: '#f8fafc', display: 'flex',
+          flexDirection: 'column', alignItems: 'center'
+        }}
+      >
+        <Box sx={{ bgcolor: '#f1f5f9', p: 3, borderRadius: '50%', mb: 2 }}>
+            <WorkOutlineIcon sx={{ fontSize: 50, color: '#94a3b8' }} />
+        </Box>
+        <Typography variant="h6" fontWeight="bold" color="#334155">
+          {t('noJobs')}
         </Typography>
-        <Typography color="text.secondary" sx={{ mb: 3 }}>
-          Create your first job posting to start receiving applicants from our talent pool.
+        <Typography color="text.secondary" sx={{ mb: 4, maxWidth: '450px' }}>
+          {trialStatus?.isExpired || trialStatus?.limitReached
+            ? t('trialExpiredUpgrade')
+            : t('createFirstJob')
+          }
         </Typography>
-        <Button variant="outlined" onClick={handleOpen} sx={{ borderRadius: 2, textTransform: 'none', fontWeight: 'bold' }}>
-          Post a Job Now
-        </Button>
+
+        {trialStatus?.isExpired || trialStatus?.limitReached ? (
+          <Button variant="contained" color="primary" startIcon={<LockOpenIcon />} sx={{ borderRadius: '50px', textTransform: 'none', fontWeight: 'bold', px: 5, py: 1.2 }}>
+            {t('upgradeNow')}
+          </Button>
+        ) : (
+          <Button variant="outlined" onClick={handleOpen} sx={{ borderRadius: '50px', textTransform: 'none', fontWeight: 'bold', px: 4, py: 1, borderWidth: 2 }}>
+            {t('postNewJob')}
+          </Button>
+        )}
       </Box>
     );
   }
 
+  
+// if there are jobs, we show them in a grid
   return (
     <Grid container spacing={3}>
-      {jobs.map((job, index) => {
-        const isNewest = index === 0; // The most recently added job will be at index 0
-        const jobNumber = jobs.length - index;  // To show the most recent job as #1
+      {jobs.filter(j => j !== null && j !== undefined).map((job, index) => {
+        const isNewest = index === 0;
 
         return (
-          <Grid size={{ xs: 12, md: 6, lg: 4 }} key={job.id}>
+          <Grid item xs={12} md={6} lg={4} key={job.id || index} sx={{ display: 'flex' }}>
             <Card 
               sx={{ 
-                borderRadius: 3, 
+                width: '100%',
+                borderRadius: 4, 
+                display: 'flex',
+                flexDirection: 'column',
                 border: isNewest ? '2px solid #0ea5e9' : '1px solid #e2e8f0', 
-                boxShadow: isNewest ? '0 8px 24px rgba(14, 165, 233, 0.15)' : '0 4px 12px rgba(0,0,0,0.02)', 
-                transition: 'all 0.3s', 
-                position: 'relative', 
-                '&:hover': { transform: 'translateY(-4px)', borderColor: isNewest ? '#0ea5e9' : '#cbd5e1' } 
+                boxShadow: isNewest ? '0 12px 24px rgba(14, 165, 233, 0.08)' : '0 4px 12px rgba(0,0,0,0.03)', 
+                transition: 'all 0.3s ease', 
+                '&:hover': { transform: 'translateY(-8px)', boxShadow: '0 20px 40px rgba(0,0,0,0.06)' } 
               }}
             >
-              <CardContent sx={{ p: 3 }}>
+              <CardContent sx={{ p: 3, flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
                 
+                {/* Top Section: Badges & Menu */}
                 <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
-                  <Typography variant="caption" fontWeight="800" color={isNewest ? 'primary.main' : 'text.disabled'} sx={{ letterSpacing: 1 }}>
-                    JOB #{jobNumber}
-                  </Typography>
-                  
-                  {isNewest && (
+                  <Stack direction="row" spacing={1}>
                     <Chip 
-                      label="Just Added" 
+                      label={job?.status || t('active')} 
                       size="small" 
-                      color="primary" 
-                      icon={<StarIcon fontSize="small" />} 
-                      sx={{ fontWeight: 'bold', height: 24, fontSize: '0.7rem' }} 
+                      sx={{ fontWeight: 'bold', bgcolor: '#dcfce7', color: '#166534', borderRadius: 1.5, fontSize: '0.7rem' }} 
                     />
-                  )}
+                    {isNewest && (
+                      <Chip 
+                        label={t('new')} 
+                        size="small" 
+                        color="primary"
+                        variant="outlined"
+                        sx={{ fontWeight: 'bold', height: 24, fontSize: '0.7rem' }} 
+                      />
+                    )}
+                  </Stack>
+                  <IconButton size="small"><MoreVertIcon fontSize="small" /></IconButton>
                 </Stack>
 
-                <Stack direction="row" justifyContent="space-between" alignItems="flex-start" sx={{ mb: 2 }}>
-                  <Chip label={job.status} size="small" color="success" sx={{ fontWeight: 'bold', bgcolor: '#dcfce7', color: '#166534' }} />
-                  <IconButton size="small"><MoreVertIcon /></IconButton>
-                </Stack>
-                
-                <Typography variant="h6" fontWeight="bold" color="#0f172a" gutterBottom>
-                  {job.title}
+                {/* Job Title */}
+                <Typography variant="h6" fontWeight="800" color="#1e293b" sx={{ mb: 2, lineHeight: 1.3 }}>
+                  {job?.title || t('untitledRole')}
                 </Typography>
+
+                {/* Job Description */}
+                <Box sx={{ mb: 3, flexGrow: 1 }}>
+                   <Stack direction="row" spacing={1} sx={{ mb: 1, color: '#64748b' }}>
+                      <DescriptionIcon sx={{ fontSize: 16 }} />
+                      <Typography variant="caption" fontWeight="bold" sx={{ textTransform: 'uppercase', letterSpacing: 0.5 }}>
+                        {t('jobDescription')}
+                      </Typography>
+                   </Stack>
+                   <Typography 
+                      variant="body2" 
+                      color="text.secondary" 
+                      sx={{ 
+                        display: '-webkit-box', 
+                        WebkitLineClamp: 4, 
+                        WebkitBoxOrient: 'vertical', 
+                        overflow: 'hidden',
+                        lineHeight: 1.6,
+                        minHeight: '4.5rem' 
+                      }}
+                    >
+                      {job?.description || t('noDescription')}
+                    </Typography>
+                </Box>
                 
-                <Stack direction="row" alignItems="center" gap={1} sx={{ mb: 1.5, color: 'text.secondary' }}>
-                  <WorkOutlineIcon fontSize="small" />
-                  <Typography variant="body2">{job.type || 'Remote / Full-Time'}</Typography>
-                </Stack>
-                <Stack direction="row" alignItems="center" gap={1} sx={{ mb: 1.5, color: 'text.secondary' }}>
-                  <WorkOutlineIcon fontSize="small" />
-                  <Typography variant="body2">{job.description || 'Job description will be available soon.'}</Typography>
-                </Stack>
-                
-                <Stack direction="row" alignItems="center" gap={1} sx={{ mb: 3, color: 'text.secondary' }}>
-                  <LocationOnIcon fontSize="small" />
-                  <Typography variant="body2">{job.location}</Typography>
+                <Divider sx={{ mb: 2, borderStyle: 'dashed' }} />
+
+                {/* Footer Section: Meta Data */}
+                <Stack spacing={1.5}>
+                  <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Stack direction="row" alignItems="center" gap={1} color="#475569">
+                      <WorkOutlineIcon sx={{ fontSize: 16 }} />
+                      <Typography variant="caption" fontWeight="600">{job?.type || t('remote')}</Typography>
+                    </Stack>
+                    <Stack direction="row" alignItems="center" gap={1} color="#475569">
+                      <LocationOnIcon sx={{ fontSize: 16 }} />
+                      <Typography variant="caption" fontWeight="600">{job?.location}</Typography>
+                    </Stack>
+                  </Stack>
+
+                  <Stack direction="row" alignItems="center" gap={1} color="#94a3b8">
+                    <CalendarMonthIcon sx={{ fontSize: 14 }} />
+                    <Typography sx={{ fontSize: '0.7rem', fontWeight: '500' }}>
+                       {t('published')}{job?.createdAt ? new Date(job.createdAt).toLocaleDateString() : t('today')}
+                    </Typography>
+                  </Stack>
                 </Stack>
 
-                <Typography variant="caption" color="text.disabled" display="block" textAlign="right">
-                  Posted on {job.date}
-                </Typography>
               </CardContent>
             </Card>
           </Grid>
