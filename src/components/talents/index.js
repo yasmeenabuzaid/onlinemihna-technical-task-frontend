@@ -25,7 +25,7 @@ export default function TalentsPage() {
         const fetchTalents = async () => {
             try {
                 setLoading(true);
-                const response = await BackendConnector.getTalents(1, 50); 
+                const response = await BackendConnector.getTalents(1, 500); 
                 const fetchedArray = Array.isArray(response.data) ? response.data : 
                                      (Array.isArray(response.data?.data) ? response.data.data : []);
                 setTalents(fetchedArray);
