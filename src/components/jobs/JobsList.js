@@ -11,7 +11,6 @@ import LockOpenIcon from '@mui/icons-material/LockOpen';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import DescriptionIcon from '@mui/icons-material/Description';
 
-
 // translations
 import { useTranslations } from 'next-intl';
 
@@ -21,7 +20,6 @@ import { useApp } from '@/context/AppContext';
 export default function JobsList({ jobs, handleOpen }) {
   const { trialStatus } = useApp();
   const t = useTranslations('Jobs'); 
-
 
   // for safety, if jobs = empty or null
   if (jobs.length === 0) {
@@ -65,7 +63,20 @@ export default function JobsList({ jobs, handleOpen }) {
         display: 'grid', 
         gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' }, 
         gap: 3, 
-        alignItems: 'stretch' 
+        alignItems: 'stretch',
+        
+        maxHeight: 'calc(100vh - 180px)', 
+        overflowY: 'auto', 
+        pb: 4, 
+        px: 1, 
+        
+        '&::-webkit-scrollbar': { width: '6px' },
+        '&::-webkit-scrollbar-track': { background: 'transparent' },
+        '&::-webkit-scrollbar-thumb': { 
+          background: '#cbd5e1', 
+          borderRadius: '10px' 
+        },
+        '&::-webkit-scrollbar-thumb:hover': { background: '#94a3b8' },
       }}
     >
       {jobs.filter(j => j !== null && j !== undefined).map((job, index) => {

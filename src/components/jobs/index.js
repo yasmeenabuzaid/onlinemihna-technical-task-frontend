@@ -21,7 +21,7 @@ export default function JobsPage() {
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const [newJob, setNewJob] = useState({ title: '', type: '', location: '', description: '' });
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const MAX_JOBS = 3;
   const isLimitReached = trialStatus?.limitReached || jobs.length >= MAX_JOBS;
   const progressPercentage = (jobs.length / MAX_JOBS) * 100;
@@ -30,7 +30,7 @@ export default function JobsPage() {
     try {
       setLoading(true);
       const response = await BackendConnector.getJobs();
-          // check if response is already an array, if not try to access data or data.data
+      // check if response is already an array, if not try to access data or data.data
       const jobsArray = Array.isArray(response) ? response : (response.data || []); 
       setJobs(jobsArray);
     } catch (error) {
@@ -53,12 +53,15 @@ export default function JobsPage() {
 
   const handlePostJob = async () => {
     try {
+      setIsSubmitting(true); 
       const response = await BackendConnector.createJob(newJob);
       await fetchJobs(); 
       await startTrialSession(); 
       handleClose();
     } catch (error) {
       alert(error.response?.data?.error || error.message || "Limit reached or Server Error");
+    } finally {
+      setIsSubmitting(false); 
     }
   };
 
@@ -109,6 +112,7 @@ export default function JobsPage() {
         setNewJob={setNewJob}
         handlePostJob={handlePostJob}
         t={t}
+        isSubmitting={isSubmitting} 
       />
     </Container>
   );

@@ -46,10 +46,21 @@
  "Jobs": {
   "title": "My Posted Jobs",
   "addBtn": "Post New Job",
+  "modalTitle": "Post a New Job",
+
+    "typeFullTime": "Full-time",
+    "typePartTime": "Part-time",
+    "typeContract": "Contract",
+    "typeInternship": "Internship",
+    "locRemote": "Remote",
+    "locOnSite": "On-site",
+    "locHybrid": "Hybrid",
+    
+    "errorTitleLen": "Title must be between 3 and 60 characters.",
+    "errorDescLen": "Description must be at least 20 characters.",
   "limitReached": "You've reached the limit of 3 jobs for the free trial.",
   "postNewJob": "Post a Job Now",
   "limitReachedMessage": "You have reached the limit of 3 job postings for the 7-day free trial. Please upgrade your account to post more.",
-  "modalTitle": "Post a New Job",
   "noJobs": "No jobs posted yet",
   "trialExpiredUpgrade": "Trial expired or limit reached. Please upgrade.",
   "createFirstJob": "Create your first job posting now.",
