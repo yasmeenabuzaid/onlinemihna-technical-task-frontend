@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from 'react';
-import { Box, Typography, Button, Stack } from '@mui/material';
+import { Box, Container, Typography, Button, Stack } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useTranslations } from 'next-intl';
 
@@ -26,13 +26,12 @@ export default function JobsPage() {
   const isLimitReached = trialStatus?.limitReached || jobs.length >= MAX_JOBS;
   const progressPercentage = (jobs.length / MAX_JOBS) * 100;
 
-const fetchJobs = useCallback(async () => {
+  const fetchJobs = useCallback(async () => {
     try {
       setLoading(true);
       const response = await BackendConnector.getJobs();
-    // check if response is already an array, if not try to access data or data.data
-    const jobsArray = Array.isArray(response) ? response : (response.data || []); 
-      console.log("Final Jobs Array:", jobsArray);
+          // check if response is already an array, if not try to access data or data.data
+      const jobsArray = Array.isArray(response) ? response : (response.data || []); 
       setJobs(jobsArray);
     } catch (error) {
       console.error("Failed to fetch jobs:", error);
@@ -55,12 +54,8 @@ const fetchJobs = useCallback(async () => {
   const handlePostJob = async () => {
     try {
       const response = await BackendConnector.createJob(newJob);
-      
-      const addedJob = response.data?.job || response.data;
-      setJobs(prevJobs => [addedJob, ...prevJobs]);
-      
+      await fetchJobs(); 
       await startTrialSession(); 
-      
       handleClose();
     } catch (error) {
       alert(error.response?.data?.error || error.message || "Limit reached or Server Error");
@@ -68,7 +63,7 @@ const fetchJobs = useCallback(async () => {
   };
 
   return (
-    <Box sx={{ p: { xs: 2, md: 3 }, width: '100%', flexGrow: 1 }}>
+    <Container maxWidth="xl" sx={{ p: { xs: 2, md: 4 }, width: '100%', flexGrow: 1 }}>
       <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" alignItems={{ xs: 'flex-start', md: 'center' }} spacing={3} sx={{ mb: 4 }}>
         <Box>
           <Typography variant="h4" fontWeight="800" color="#0f172a" gutterBottom>
@@ -115,6 +110,6 @@ const fetchJobs = useCallback(async () => {
         handlePostJob={handlePostJob}
         t={t}
       />
-    </Box>
+    </Container>
   );
 }
