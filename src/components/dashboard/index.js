@@ -9,29 +9,43 @@ import TimerIcon from "@mui/icons-material/Timer";
 import StatsCard from "@/components/dashboard/StatsCard"; 
 // i18n
 import { useTranslations } from "next-intl";
+// context
+import { useApp } from "@/context/AppContext";
 
 export default function DashboardOverview() {
   const t = useTranslations('Dashboard');
+  
+  const { trialStatus, loadingTrial, isRTL } = useApp();
+  console.log("Trial Status from Context:", trialStatus);
 
-  // statistics data - demo values
+  const jobsCount = trialStatus?.jobsCount || 0;
+  const daysLeft = trialStatus?.daysLeft || 0;
+  const isExpired = trialStatus?.isExpired;
+  const MAX_JOBS = 3;
+
+  // statistics data - Dynamic Values
   const stats = [
     {
       title: t("availableTalents"),
-      value: "500",
+      value: "500", 
       icon: <PeopleAltIcon color="primary" fontSize="large" />,
       bgColor: "#e0f2fe",
     },
     {
       title: t("jobsPosted"),
-      value: "0 / 3",
+      value: trialStatus ? `${jobsCount} / ${MAX_JOBS}` : "...", 
       icon: <WorkHistoryIcon sx={{ color: "#d97706" }} fontSize="large" />,
       bgColor: "#fef3c7",
     },
     {
       title: t("trialPeriod"),
-      value: t("daysLeft", { count: 7 }),
-      icon: <TimerIcon sx={{ color: "#ea580c" }} fontSize="large" />,
-      bgColor: "#fff7ed",
+      value: !trialStatus 
+        ? "..." 
+        : isExpired 
+          ? (isRTL ? "انتهت الصلاحية" : "Expired") 
+          : t("daysLeft", { count: daysLeft }),
+      icon: <TimerIcon sx={{ color: isExpired ? "#dc2626" : "#ea580c" }} fontSize="large" />,
+      bgColor: isExpired ? "#fee2e2" : "#fff7ed", 
     },
   ];
 

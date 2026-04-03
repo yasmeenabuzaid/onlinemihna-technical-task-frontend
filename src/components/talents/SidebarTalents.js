@@ -1,30 +1,13 @@
 "use client";
 
-// mui + icons
-import {
-    Box, Typography, TextField, InputAdornment, List, ListItemButton,
-    ListItemAvatar, Avatar, ListItemText, Stack,
-    IconButton, Pagination, Tooltip,
-} from '@mui/material';
+import { Box, Typography, TextField, InputAdornment, List, ListItemButton, ListItemAvatar, Avatar, ListItemText, Stack, IconButton, Pagination, Tooltip } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
-
-// context
 import { useApp } from '@/context/AppContext';
-
-// i18n
 import { useTranslations } from 'next-intl';
-
-// hooks
 import { useState, useEffect } from 'react';
 
-export default function SidebarTalents({ 
-    selectedTalent, 
-    setSelectedTalent, 
-    filteredTalents, 
-    searchTerm,      
-    setSearchTerm    
-}) {
+export default function SidebarTalents({ selectedTalent, setSelectedTalent, filteredTalents, searchTerm, setSearchTerm, isMobile, setShowMobileDetails }) {
     const { isRTL } = useApp();
     const t = useTranslations('Talents');
     
@@ -47,29 +30,22 @@ export default function SidebarTalents({
         <Box
             sx={{
                 width: { xs: '100%', md: 360 }, 
+                height: '100%',
                 flexShrink: 0,
                 display: 'flex',
                 flexDirection: 'column',
-                borderRight: isRTL ? 0 : '1px solid #e2e8f0',
-                borderLeft: isRTL ? '1px solid #e2e8f0' : 0,
+                borderRight: { md: isRTL ? 0 : '1px solid #e2e8f0' },
+                borderLeft: { md: isRTL ? '1px solid #e2e8f0' : 0 },
                 bgcolor: '#ffffff'
             }}
         >
-            {/*filter and search*/}
             <Box sx={{ p: 2, borderBottom: '1px solid #e2e8f0', bgcolor: '#f8fafc' }}>
                 <Stack direction="row" spacing={1}>
                     <TextField
-                        fullWidth
-                        size="small"
-                        placeholder={t('searchPlaceholder') || 'Search talents...'}
+                        fullWidth size="small" placeholder={t('searchPlaceholder') || 'Search talents...'}
                         value={searchTerm}
-                        onChange={(e) => { 
-                            setSearchTerm(e.target.value); 
-                            setPage(1); 
-                        }}
-                        InputProps={{
-                            startAdornment: <InputAdornment position="start"><SearchIcon fontSize="small" /></InputAdornment>,
-                        }}
+                        onChange={(e) => { setSearchTerm(e.target.value); setPage(1); }}
+                        InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon fontSize="small" /></InputAdornment> }}
                         sx={{ bgcolor: 'white', '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
                     />
                     <Tooltip title="Filter by Role/Status">
@@ -80,22 +56,21 @@ export default function SidebarTalents({
                 </Stack>
             </Box>
 
-            {/* list */}
             <List sx={{ flexGrow: 1, overflowY: 'auto', p: 0 }}>
                 {currentTalents.map((talent) => (
                     <ListItemButton
                         key={talent.id}
                         selected={selectedTalent?.id === talent.id}
-                        onClick={() => setSelectedTalent(talent)}
+                        onClick={() => {
+                            setSelectedTalent(talent);
+                            if (isMobile) setShowMobileDetails(true); 
+                        }}
                         sx={{
-                            borderBottom: '1px solid #f1f5f9',
-                            py: 1.5,
-                            px: 2,
-                            transition: 'all 0.2s',
+                            borderBottom: '1px solid #f1f5f9', py: 1.5, px: 2, transition: 'all 0.2s',
                             '&.Mui-selected': {
                                 bgcolor: '#f0f9ff',
-                                borderRight: isRTL ? 0 : '4px solid #0ea5e9',
-                                borderLeft: isRTL ? '4px solid #0ea5e9' : 0,
+                                borderRight: { md: isRTL ? 0 : '4px solid #0ea5e9' },
+                                borderLeft: { md: isRTL ? '4px solid #0ea5e9' : 0 },
                             },
                             '&:hover': { bgcolor: '#f8fafc' }
                         }}
@@ -113,17 +88,9 @@ export default function SidebarTalents({
                 ))}
             </List>
 
-            {/* Pagination */}
             {totalPages > 1 && (
                 <Box sx={{ p: 1.5, borderTop: '1px solid #e2e8f0', display: 'flex', justifyContent: 'center', bgcolor: '#f8fafc' }}>
-                    <Pagination
-                        count={totalPages}
-                        page={page}
-                        onChange={(e, val) => setPage(val)}
-                        size="small"
-                        color="primary"
-                        siblingCount={0} 
-                    />
+                    <Pagination count={totalPages} page={page} onChange={(e, val) => setPage(val)} size="small" color="primary" siblingCount={0} />
                 </Box>
             )}
         </Box>

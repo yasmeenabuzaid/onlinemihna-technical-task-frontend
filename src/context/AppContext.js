@@ -17,6 +17,7 @@ export function AppProvider({ children }) {
     try {
         setLoadingTrial(true);
         const status = await BackendConnector.getTrialStatus();
+        console.log("Trial Status from API:", status);
         setTrialStatus(status);
     } catch (error) {
         console.error("Error fetching trial status:", error);

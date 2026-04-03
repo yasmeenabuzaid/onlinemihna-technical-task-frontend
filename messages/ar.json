@@ -2,7 +2,11 @@
   "Navbar": {
     "logo": "طريقك للتوظيف ",
     "dashboardBtn": "لوحة التحكم",
-    "langBtn": "English"
+    "langBtn": "English",
+    "trialPill": "تجريبي: متبقي {days} أيام",
+    "trialTooltip": "الفترة التجريبية فعالة: متبقي لك {jobs} وظائف للنشر",
+    "upgrade": "ترقية",
+    "daysLeft": "{count} أيام متبقية"
   },
   "Landing": {
     "heroTitle": "ابنِ فريق أحلامك",
@@ -34,8 +38,7 @@
       "totalApplications": "إجمالي الطلبات",
     "jobsPosted": "الوظائف المنشورة",
     "trialPeriod": "الفترة التجريبية",
-    "daysLeft": "{count} أيام متبقية"
-      
+"daysLeft": "{count} أيام متبقية"      
   },
 "Jobs": {
   "title": "وظائفي المنشورة",
@@ -56,6 +59,15 @@
   "remote": "عن بُعد",
   "published": "نشر في: ",
   "today": "اليوم",
+
+    "modalDescription": "قم بتعبئة التفاصيل أدناه لنشر فرصة عمل جديدة.",
+    "jobTitleLabel": "المسمى الوظيفي",
+    "employmentTypeLabel": "نوع التوظيف",
+    "jobDescriptionLabel": "الوصف الوظيفي",
+    "locationLabel": "الموقع",
+    "cancelBtn": "إلغاء",
+    "publishBtn": "نشر الوظيفة",
+  
   "form": {
     "title": "وظائفي المنشورة",
     "postNewJob": "انشر وظيفة",
@@ -78,5 +90,10 @@
     "limitWarning": "لقد استهلكت الحد الأقصى للوظائف المتاحة. يرجى الترقية.",
     "upgradeBtn": "ترقية الآن",
     "activeStatus": "أنت في الفترة التجريبية: متبقي {daysLeft} أيام، و {jobsLeft} وظائف متاحة للنشر."
-  }
+  },
+  "Sidebar": {
+    "overview": "نظرة عامة",
+    "talents": "المواهب",
+    "myJobs": "وظائفي"
+} 
 }

@@ -1,32 +1,58 @@
 "use client";
 
-import { Box, useTheme, useMediaQuery } from '@mui/material';
-import { useEffect } from 'react';
+import { Box } from '@mui/material';
+import { useEffect, useState, useRef } from 'react';
 import DashboardSidebar from '@/components/layout/DashboardSidebar';
 import TrialBanner from '@/components/layout/TrialBanner'; 
 import { useApp } from '@/context/AppContext';
 
 export default function DashboardLayout({ children }) {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const { startTrialSession, trialStatus } = useApp();
   
-  const { startTrialSession } = useApp();
+  const hasFetched = useRef(false);
 
   useEffect(() => {
-    startTrialSession();
+    if (!trialStatus && !hasFetched.current) {
+      hasFetched.current = true;
+      startTrialSession();
+    }
+  }, []); 
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  useEffect(() => {
+    const toggleMenu = () => setMobileOpen((prev) => !prev);
+    window.addEventListener('toggleMobileMenu', toggleMenu);
+    return () => window.removeEventListener('toggleMobileMenu', toggleMenu);
   }, []);
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       
-      <TrialBanner />
+      {/* <TrialBanner /> */}
 
-      <Box sx={{ display: 'flex', flexGrow: 1, padding: { xs: 2, md: 5 } }}>
-        <DashboardSidebar />
+      <Box sx={{ display: 'flex', flexGrow: 1 }}>
         
-        <Box sx={{ flexGrow: 1, overflow: 'hidden' }}>
+        <DashboardSidebar 
+          mobileOpen={mobileOpen} 
+          handleDrawerToggle={handleDrawerToggle} 
+        />
+        
+        <Box 
+          component="main"
+          sx={{ 
+            flexGrow: 1, 
+            p: { xs: 2, md: 4 }, 
+            width: { sm: `calc(100% - 240px)` }, 
+            overflow: 'hidden' 
+          }}
+        >
           {children}
         </Box>
+
       </Box>
     </Box>
   );

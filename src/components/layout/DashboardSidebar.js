@@ -1,48 +1,38 @@
-"use client"; // this is CSR component because it uses hooks and context
+"use client"; 
 
-// mui + icons
 import { Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Toolbar, Box } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import WorkIcon from '@mui/icons-material/Work';
 import PeopleIcon from '@mui/icons-material/People';
 
-// navigation + context
 import { useRouter } from '@/navigation';
 import { useApp } from '@/context/AppContext';
+import { useTranslations } from 'next-intl';
 
 const drawerWidth = 240; 
-// we initialize the drawer width here because we will use it in both the sidebar and the layout 
-// to keep it consistent and avoid hardcoding the value in multiple places
 
-export default function DashboardSidebar() {
+export default function DashboardSidebar({ mobileOpen, handleDrawerToggle }) {
   const router = useRouter();
   const { isRTL } = useApp();
+  const t = useTranslations('Sidebar'); 
 
   const menuItems = [
-    { text: 'Overview', icon: <DashboardIcon />, path: '/dashboard' },
-    { text: 'Talents', icon: <PeopleIcon />, path: '/dashboard/talents' },
-    { text: 'My Jobs', icon: <WorkIcon />, path: '/dashboard/jobs' },
+    { text: t('overview'), icon: <DashboardIcon />, path: '/dashboard' },
+    { text: t('talents'), icon: <PeopleIcon />, path: '/dashboard/talents' },
+    { text: t('myJobs'), icon: <WorkIcon />, path: '/dashboard/jobs' },
   ];
-  // we define the menu items for the sidebar as an array of objects to  make the sidebar easily extensible and maintainable,
-  //  allowing us to add or remove items without changing the core logic of the component
 
-  return (
-    <Drawer
-      variant="permanent"
-      anchor={isRTL ? 'right' : 'left'}
-      sx={{
-        width: drawerWidth,
-        flexShrink: 0,
-        [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box', borderRight: isRTL ? 0 : '1px solid #e2e8f0', borderLeft: isRTL ? '1px solid #e2e8f0' : 0 },
-      }}
-    >
+  const drawerContent = (
+    <>
       <Toolbar /> 
       <Box sx={{ overflow: 'auto', mt: 2 }}>
         <List>
-          {/* items of menu */}
           {menuItems.map((item) => (
             <ListItem key={item.text} disablePadding>
-              <ListItemButton onClick={() => router.push(item.path)}>
+              <ListItemButton onClick={() => {
+                router.push(item.path);
+                if (handleDrawerToggle) handleDrawerToggle(); 
+              }}>
                 <ListItemIcon sx={{ minWidth: 40 }}>{item.icon}</ListItemIcon>
                 <ListItemText primary={item.text} />
               </ListItemButton>
@@ -50,6 +40,41 @@ export default function DashboardSidebar() {
           ))}
         </List>
       </Box>
-    </Drawer>
+    </>
+  );
+
+  return (
+    <Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}>
+      
+      <Drawer
+        variant="temporary"
+        anchor={isRTL ? 'right' : 'left'}
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{ keepMounted: true }} 
+        sx={{
+          display: { xs: 'block', sm: 'none' },
+          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+        }}
+      >
+        {drawerContent}
+      </Drawer>
+
+      <Drawer
+        variant="permanent"
+        anchor={isRTL ? 'right' : 'left'}
+        sx={{
+          display: { xs: 'none', sm: 'block' }, 
+          '& .MuiDrawer-paper': { 
+            boxSizing: 'border-box', 
+            width: drawerWidth, 
+            borderRight: isRTL ? 0 : '1px solid #e2e8f0', 
+            borderLeft: isRTL ? '1px solid #e2e8f0' : 0 
+          },
+        }}
+      >
+        {drawerContent}
+      </Drawer>
+    </Box>
   );
 }

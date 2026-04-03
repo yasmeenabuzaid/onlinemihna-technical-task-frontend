@@ -2,7 +2,11 @@
   "Navbar": {
     "logo": "HireWay",
     "dashboardBtn": "Go to Dashboard",
-    "langBtn": "عربي"
+    "langBtn": "عربي",
+    "trialPill": "Trial: {days} Days left",
+    "trialTooltip": "Free Trial Active: {jobs} job posts remaining",
+    "upgrade": "Upgrade",
+    "daysLeft": "{count} Days Left"
   },
   "Landing": {
     "heroTitle": "Build Your Dream Team",
@@ -37,7 +41,7 @@
     "jobsPosted": "Jobs Posted",
     "trialPeriod": "Trial Period",
 
-    "daysLeft": "Days Left in Trial"
+    "daysLeft": "{count} Days Left"
   },
  "Jobs": {
   "title": "My Posted Jobs",
@@ -58,6 +62,13 @@
   "remote": "Remote",
   "published": "Published: ",
   "today": "Today",
+    "modalDescription": "Fill in the details below to publish a new job opening.",
+    "jobTitleLabel": "Job Title",
+    "employmentTypeLabel": "Employment Type",
+    "jobDescriptionLabel": "Job Description",
+    "locationLabel": "Location",
+    "cancelBtn": "Cancel",
+    "publishBtn": "Publish Job",
   "form": {
     "title": "My Posted Jobs",
     "postNewJob": "Post a Job",
@@ -80,5 +91,10 @@
     "limitWarning": "You have reached the limit of 3 job posts. Please upgrade to post more.",
     "upgradeBtn": "Upgrade Now",
     "activeStatus": "Free Trial Active: {daysLeft} days left, {jobsLeft} job posts remaining."
+  },
+  "Sidebar": {
+    "overview": "Overview",
+    "talents": "Talents",
+    "myJobs": "My Jobs"
   }
 }
