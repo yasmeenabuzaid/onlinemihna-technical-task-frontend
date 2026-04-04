@@ -1,6 +1,7 @@
 # OnlineMihna - Employer Trial Task (Frontend) 
 
 **Live Demo:** https://onlinemihna-technical-task-frontend.vercel.app/en
+**Video Demo:** https://youtu.be/0rx9gTDoy2U
 // note: the frontend link (Vercel free domain) may be blocked on some networks/ISPs, please try accessing it using mobile data or a different network if it doesn't load
 
 
